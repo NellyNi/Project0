@@ -22,17 +22,17 @@
  */
 char* parse(char * lineptr, char **args)
 {
-  //while lineIn isn't done. 
-  while (*lineptr != '\0') 
+  //while lineIn isn't done.
+  while (*lineptr != '\0')
   {
     // If it's whitespace, tab or newline,
     // turn it into \0 and keep moving till we find the next token.
     // This makes sure each arg has a \0 immidiately after it
-    // without needing to copy parts of lineIn to new strings. 
+    // without needing to copy parts of lineIn to new strings.
     while (!(isdigit(*lineptr) || isalpha(*lineptr) || *lineptr == '-'
         || *lineptr == '.' || *lineptr == '\"'|| *lineptr == '/'
         || *lineptr == '_'))
-    {   
+    {
       //break out if we reach an "end"
       if(*lineptr == '\0' || *lineptr == '<' || *lineptr == '>'
           || *lineptr == '|' || *lineptr == '&')
@@ -48,7 +48,7 @@ char* parse(char * lineptr, char **args)
       break;
 
     //mark we've found a new arg
-    *args = lineptr;    
+    *args = lineptr;
     args++;
 
     // keep moving till the argument ends. Once we reach a termination symbol,
@@ -59,7 +59,7 @@ char* parse(char * lineptr, char **args)
       lineptr++;
   }
 
-  *args = NULL; 
+  *args = NULL;
 
   return lineptr;
 }
@@ -68,13 +68,13 @@ char* parse(char * lineptr, char **args)
 /*
  * This function forks a child to execute  a command stored
  * in a string array *args[].
- * inPipe -- the input stream file descriptor.  For example,  wc < temp 
- * outPipe --the output stream file descriptor.  For example, ls > temp 
+ * inPipe -- the input stream file descriptor.  For example,  wc < temp
+ * outPipe --the output stream file descriptor.  For example, ls > temp
  */
 void fchild(char **args,int inPipe, int outPipe)
 {
   pid_t pid;
-  
+
   pid = fork();
   if (pid == 0)/*Child  process*/
   {
@@ -86,14 +86,14 @@ void fchild(char **args,int inPipe, int outPipe)
     dup2(outPipe, 1);
     execvp(args[0], args);
 
-    
 
-    if (execReturn < 0) 
-    { 
+
+    if (execReturn < 0)
+    {
       printf("ERROR: exec failed\n");
       exit(1);
     }
-      
+
     _exit(0);
 
   }
@@ -101,12 +101,12 @@ void fchild(char **args,int inPipe, int outPipe)
   if (pid < 0)
   {
     printf("ERROR: Failed to fork child process.\n");
-    exit(1); 
+    exit(1);
   }
-  
+
   if(inPipe != 0)
     close(inPipe); /*clean up, release file control resource*/
-    
+
   if(outPipe != 1)
     close(outPipe); /*clean up, release file control  resource*/
 }
@@ -134,17 +134,17 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
     /*Your solution*/
     if (strcmp(args[0], "exit") == 0)
         exit(0);
-            
-    if (*nextChar == '<' && inPipe == 0) 
+
+    if (*nextChar == '<' && inPipe == 0)
     {
       //It is input redirection, setup the file name to read from
       char * in[length];
-      
+
       //nextChar+1 moves the character position after <,
       //thus points to a file name
-      nextChar = parse(nextChar+1,in); 
+      nextChar = parse(nextChar+1,in);
 
-      /* Change inPipe so it follows the redirection */ 
+      /* Change inPipe so it follows the redirection */
       /*Your solutuon*/
       int fd = open(*in, O_RDONLY);
 
@@ -158,14 +158,14 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
         //printf("Shell: \n");
         //nextChar+1 moves the character position after >,
         //thus points to a file name
-        // nextChar = parse(nextChar-1,in); 
+        // nextChar = parse(nextChar-1,in);
         // nextChar++;
-        nextChar = parse(nextChar+1,out); 
+        nextChar = parse(nextChar+1,out);
 
         //create a new file to save output
         int output_fd;
         output_fd = open(*out, O_WRONLY | O_CREAT, 0644);
-        
+
         outPipe = output_fd;
     }
 
@@ -173,46 +173,31 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
     { /*It is a pipe, setup the input and output descriptors */
       /*execute the subcommand that has been parsed, but setup the output using this pipe*/
       /*Your solution*/
-      //char * out[length];
-      printf("Shell: \n");
-        //printf("Shell: \n");
-        //nextChar+1 moves the character position after >,
-        //thus points to a file name
-        // nextChar = parse(nextChar-1,in); 
-        // nextChar++;
-        // nextChar = parse(nextChar-1,out); 
 
-        // //create a new file to save output
-        // int output_fd, out_ret, len;
-        // char line[MAX_LINE_LENGTH];
-        // // int fd = open(*in, O_RDONLY);
-        // output_fd = open(*out, O_WRONLY | O_CREAT, 0644);
-        
-        // dup2(outPipe, 1);
-        // execvp(args[0], args);
-        
-         
-        // /*execute the remaining subcommands, but setup the input using this pipe*/
-        // /*Your solution*/
-        // char * in[length];
-        
-        // //nextChar+1 moves the character position after <,
-        // //thus points to a file name
-        // nextChar = parse(nextChar+1,in); 
 
-        // /* Change inPipe so it follows the redirection */ 
-        // /*Your solutuon*/
-        // int fd = open(*in, O_RDONLY);
-        // dup2(inPipe, 0);
-        // execvp(args[0], args);
-        // close(inPipe);
-        // close(outPipe);
-        
+      int fd[2];
+      pipe(fd);
+      fchild(args, inPipe, fd[1]);
+
+
+      // /*execute the remaining subcommands, but setup the input using this pipe*/
+      // /*Your solution*/
+      char* in[length];
+      nextChar = parse(nextChar+1,in);
+      int new_len = 0;
+
+      while (*(nextChar+new_len) != '\n')
+        new_len++;
+
+      runcmd(*in, new_len, fd[0], outPipe);
+      // /* Change inPipe so it follows the redirection */
+      // /*Your solutuon*/
+      inPipe = fd[0];
 
       return;
     }
 
-    if (*nextChar == '\0') 
+    if (*nextChar == '\0')
     { /*There is noting special after this subcommand, so we just execute in a regular way*/
       fchild(args,inPipe,outPipe);
       return;
@@ -229,32 +214,32 @@ int main(int argc, char *argv[])
   /*Your solution*/
   char lineIn[1024];
 
-  while(1) 
+  while(1)
   {
     if (fgets(lineIn,1024,stdin) == NULL)
       break;
-              
+
     int len = 0;
     while (lineIn[len] != '\0')
       len++;
-      
+
     /* remove the \n that fgets adds to the end */
     if (len != 0 && lineIn[len-1] == '\n')
     {
       lineIn[len-1] = '\0';
       len--;
     }
-        
+
     //Run this string of subcommands with 0 as default input stream
     //and 1 as default output stream
     runcmd(lineIn, len,0,1);
-  
+
     /*Wait for the child completes */
     /*Your solution*/
 
     // wait(NULL);
     // exit(0);
-    
+
   }
 
   return 0;
