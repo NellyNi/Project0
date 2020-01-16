@@ -1,0 +1,20 @@
+-rw-r--r--   1 jiaweini  staff    0 Jan 14 19:12 temp
+-rw-r--r--   1 jiaweini  staff  160 Jan 14 19:00 ls.out
+-rw-r--r--@  1 jiaweini  staff  373 Jan  5 20:39 Makefile
+-rwxr-xr--@  1 jiaweini  staff    4 Jan  5 19:40 testfile0
+-rwxr-xr--@  1 jiaweini  staff    6 Jan  5 19:40 testfile3
+-rwxr-xr--@  1 jiaweini  staff   16 Jan  5 19:40 testfile1
+-rwxr-xr--@  1 jiaweini  staff   21 Jan  5 19:40 testfile2
+-rwxr-xr--@  1 jiaweini  staff   22 Jan  5 19:40 testfile13
+-rwxr-xr--@  1 jiaweini  staff   27 Jan  5 19:40 testfile7
+-rwxr-xr--@  1 jiaweini  staff   35 Jan  5 19:40 testfile6
+-rwxr-xr--@  1 jiaweini  staff   50 Jan  5 19:40 testfile11
+-rwxr-xr--@  1 jiaweini  staff   50 Jan  5 19:40 testfile5
+-rwxr-xr--@  1 jiaweini  staff   50 Jan  5 19:40 testfile9
+-rwxr-xr--@  1 jiaweini  staff   52 Jan  5 19:40 testfile8
+-rwxr-xr--@  1 jiaweini  staff   61 Jan  5 19:40 testfile4
+-rwxr-xr--@  1 jiaweini  staff   73 Jan  5 19:40 testfile10
+-rwxr-xr--@  1 jiaweini  staff  110 Jan  5 19:40 testfile12
+drwxr-xr-x@ 19 jiaweini  staff  608 Jan 14 19:06 .
+drwxr-xr-x@ 20 jiaweini  staff  640 Jan 14 19:00 ..
+total 128

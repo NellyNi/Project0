@@ -1,0 +1,54 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	$(CC)  $(CFLAGS) -c $<
+	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^ $(LDFLAGS)
+	$(MAKE) -C gradescope_test
+	./shell
+	./shell < testfile
+	./shell < testfile1
+	./shell < testfile2
+	./shell < testfile3
+	./shell < testfile4
+	./simple
+	./simple < testfile
+	rm *.o
+	rm shell
+	rm simple
+.c.o:
+CC      = gcc
+CFLAGS  = -O
+GS= gradescope_test
+LDFLAGS  = -O 
+MAKE=make 
+all: shell simple
+clean:
+run: 
+runsimple: 
+shell:  shell.o
+simple:  simple_shell.o
+test1: 
+test2: 
+test3: 
+test4: 
+test: 
+testall:  test1 test2 test3 test4
+testgradescope: 
+testgs:  testgradescope
+testsimple: 
