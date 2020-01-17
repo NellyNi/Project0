@@ -128,6 +128,8 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
   char * args[length];
   char * nextChar = parse(linePtr, args);
 
+  //printf("trying to run %s [..%d], i/o: %d, %d\n", linePtr, length, inPipe, outPipe);
+
   if (args[0] != NULL)
   {
     /*Exit if seeing "exit" command*/
@@ -182,14 +184,11 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
 
       // /*execute the remaining subcommands, but setup the input using this pipe*/
       // /*Your solution*/
-      char* in[length];
-      nextChar = parse(nextChar+1,in);
-      int new_len = 0;
+      //char* in[length];
+      nextChar ++;
 
-      while (*(nextChar+new_len) != '\n')
-        new_len++;
-
-      runcmd(*in, new_len, fd[0], outPipe);
+      int new_len = strlen(nextChar);
+      runcmd(nextChar, new_len, fd[0], outPipe);
       // /* Change inPipe so it follows the redirection */
       // /*Your solutuon*/
       inPipe = fd[0];
