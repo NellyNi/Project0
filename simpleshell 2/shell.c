@@ -88,8 +88,6 @@ void fchild(char **args,int inPipe, int outPipe)
       dup2(outPipe, 1);
     execvp(args[0], args);
 
-
-
     if (execReturn < 0)
     {
       printf("ERROR: exec failed\n");
@@ -157,11 +155,8 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
     {   /*It is output redirection, setup the file name to write*/
         /*Your solutuon*/
         char * out[length];
-        //printf("Shell: \n");
         //nextChar+1 moves the character position after >,
         //thus points to a file name
-        // nextChar = parse(nextChar-1,in);
-        // nextChar++;
         nextChar = parse(nextChar+1,out);
 
         //create a new file to save output
@@ -175,15 +170,12 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
     { /*It is a pipe, setup the input and output descriptors */
       /*execute the subcommand that has been parsed, but setup the output using this pipe*/
       /*Your solution*/
-
       int fd[2];
       pipe(fd);
       fchild(args, inPipe, fd[1]);
 
-
       // /*execute the remaining subcommands, but setup the input using this pipe*/
       // /*Your solution*/
-      //char* in[length];
       nextChar ++;
 
       int new_len = strlen(nextChar);
@@ -212,6 +204,7 @@ int main(int argc, char *argv[])
   /*Your solution*/
   char lineIn[1024];
   int status;
+  pid_t waitpid(pid_t pid, int *status, int options);
 
   while(1)
   {
@@ -235,11 +228,12 @@ int main(int argc, char *argv[])
 
     /*Wait for the child completes */
     /*Your solution*/
-
-    while(wait(&status)!=-1){
-      exit(0);
+    while (waitpid(-1, NULL, 0)) {
+      if (errno == ECHILD) {
+        break;
+      }
     }
-
+    
   }
 
   return 0;

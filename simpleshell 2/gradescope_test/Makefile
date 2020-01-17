@@ -2,7 +2,7 @@
 
 
 
-testall: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9
+testall: test0 test1 test2 test3 test4 test5 test6 test7 test8 test9 test10
 
 test0:
 	../shell < testfile0
@@ -33,3 +33,6 @@ test8:
 
 test9:
 	../shell < testfile9
+
+test10:
+	../shell < testfile10

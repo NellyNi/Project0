@@ -2,4 +2,3 @@ cat testfile10 > sed.out
 echo Output of pipeline
 cat sed.out
 rm sed.out
-
