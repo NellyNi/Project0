@@ -82,8 +82,10 @@ void fchild(char **args,int inPipe, int outPipe)
 
     /*Call dup2 to setup redirection, and then call excevep*/
     /*Your solution*/
-    dup2(inPipe, 0);
-    dup2(outPipe, 1);
+    if(inPipe != 0)
+      dup2(inPipe, 0);
+    if(outPipe != 1)
+      dup2(outPipe, 1);
     execvp(args[0], args);
 
 
@@ -174,7 +176,6 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
       /*execute the subcommand that has been parsed, but setup the output using this pipe*/
       /*Your solution*/
 
-
       int fd[2];
       pipe(fd);
       fchild(args, inPipe, fd[1]);
@@ -182,14 +183,11 @@ void runcmd(char * linePtr, int length, int inPipe, int outPipe)
 
       // /*execute the remaining subcommands, but setup the input using this pipe*/
       // /*Your solution*/
-      char* in[length];
-      nextChar = parse(nextChar+1,in);
-      int new_len = 0;
+      //char* in[length];
+      nextChar ++;
 
-      while (*(nextChar+new_len) != '\n')
-        new_len++;
-
-      runcmd(*in, new_len, fd[0], outPipe);
+      int new_len = strlen(nextChar);
+      runcmd(nextChar, new_len, fd[0], outPipe);
       // /* Change inPipe so it follows the redirection */
       // /*Your solutuon*/
       inPipe = fd[0];
@@ -213,6 +211,7 @@ int main(int argc, char *argv[])
 {
   /*Your solution*/
   char lineIn[1024];
+  int status;
 
   while(1)
   {
@@ -237,8 +236,9 @@ int main(int argc, char *argv[])
     /*Wait for the child completes */
     /*Your solution*/
 
-    // wait(NULL);
-    // exit(0);
+    while(wait(&status)!=-1){
+      exit(0);
+    }
 
   }
 
